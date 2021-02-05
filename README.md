@@ -1,6 +1,8 @@
 # cubemx.cmake
 
-This is a collection of lightweight CMake and Python scripts allowing to build STM32 CubeMX projects with CMake and (optionally) debug them with VSCode
+This is a collection of lightweight CMake and Python scripts that can build STM32 CubeMX projects with CMake and set up VSCode for editing/building/debugging.
+
+It is a more lightweight / modular replacement of [ioc2cmake](https://github.com/patrislav1/ioc2cmake), taking advantage of VSCode CMake tools, avoiding the need to pass compiler flags / include paths etc directly to VSCode.
 
 ## Features
 
