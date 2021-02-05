@@ -33,3 +33,7 @@ mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc.cmake .
 mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainFile": "${workspaceRoot}/cmake/arm-gcc.cmake" }]' > .vscode/cmake-kits.json
 ```
 * Start VSCode and select the kit "arm-gcc from CMake Toolchain"
+
+## Caveats
+
+* The list of CubeMX source files is determined by globbing at CMake configuration stage. If it changes (by re-generating the sources with added peripherals, for example) then the CubeMX configuration has to be invoked again (in VSCode: Ctrl-Shift-P & "CMake: Configure" or "Developer: Reload Window")
