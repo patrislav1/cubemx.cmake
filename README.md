@@ -52,3 +52,8 @@ file(GLOB_RECURSE MIDDLEWARE_SRC
 )
 target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
 ```
+
+* For most STM32 chips, `pyocd` must be updated with a device pack to recognize the chip, e.g.
+```
+pyocd pack -i stm32f407vgtx
+```
