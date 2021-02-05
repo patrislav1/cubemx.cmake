@@ -15,7 +15,7 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 ## How to use
 
 * Create a project with CubeMX
-* Generate source code. (Select "Copy only necessary library files")
+* Generate source code. (Select "Project->Toolchain/IDE: Makefile" and "Code Generator->Copy only necessary library files")
 * Copy the `cmake` folder to the project directory
 * Create a `CMakeLists.txt` from the `CMakeLists-example.txt`
 
@@ -27,7 +27,7 @@ mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc.cmake .
 
 ## How to build a project in VSCode
 
-* Make sure the CMake tools are installed.
+* Make sure the "CMake Tools" extension is installed.
 * Point VSCode to the CMake toolchain file in the project directory:
 ```
 mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainFile": "${workspaceRoot}/cmake/arm-gcc.cmake" }]' > .vscode/cmake-kits.json
@@ -57,3 +57,11 @@ target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
 ```
 pyocd pack -i stm32f407vgtx
 ```
+
+## Tested with following chips / boards
+
+* STM32F407VGT (STM32F407G-DISC1)
+* STM32L496ZGT (NUCLEO-L496ZG)
+* STM32L433RCT (NUCLEO-L433RC-P)
+* STM32F767ZIT (NUCLEO-F767ZI)
+* STM32H743ZIT (NUCLEO-H743ZI)

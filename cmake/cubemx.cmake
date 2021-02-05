@@ -36,13 +36,13 @@ set(CMX_INC
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
 )
 
-enable_language(ASM)
-cmx_get(startupfile CMX_STARTUPFILE)
-
 file(GLOB_RECURSE CMX_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/*.c"
 )
+
+enable_language(ASM)
+cmx_get(startupfile CMX_STARTUPFILE)
 
 list(APPEND CMX_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_STARTUPFILE}"
