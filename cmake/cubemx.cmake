@@ -42,6 +42,9 @@ cmx_get(startupfile CMX_STARTUPFILE)
 file(GLOB_RECURSE CMX_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/*.c"
+)
+
+list(APPEND CMX_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_STARTUPFILE}"
 )
 
