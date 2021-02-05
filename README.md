@@ -15,7 +15,7 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 ## How to use
 
 * Create a project with CubeMX
-* Generate source code
+* Generate source code. (Select "Copy only necessary library files")
 * Copy the `cmake` folder to the project directory
 * Create a `CMakeLists.txt` from the `CMakeLists-example.txt`
 
@@ -37,3 +37,18 @@ mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainF
 ## Caveats
 
 * The list of CubeMX source files is determined by globbing at CMake configuration stage. If it changes (by re-generating the sources with added peripherals, for example) then the CubeMX configuration has to be invoked again (in VSCode: Ctrl-Shift-P & "CMake: Configure" or "Developer: Reload Window")
+
+* Only the sources in `Core` and `Drivers` are added automatically. If there are additional generated sources (e.g. Middlewares), they have to be added manually, for instance:
+```
+target_include_directories(example_target PRIVATE
+    "USB_HOST/App"
+    "USB_HOST/Target"
+    "Middlewares/ST/STM32_USB_Host_Library/Core/Inc"
+    "Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc"
+)
+file(GLOB_RECURSE MIDDLEWARE_SRC
+    "USB_HOST/*.c"
+    "Middlewares/*.c"
+)
+target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
+```
