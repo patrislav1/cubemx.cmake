@@ -34,9 +34,10 @@ cmx_get(prjname CMX_PROJ)
 
 cmx_get(mcuname CMX_MCUNAME)
 cmx_get(mcufamily CMX_MCUFAM)
+cmx_get(srcpath CMX_SRCPATH)
 
 set(CMX_INC
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include"
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${CMX_MCUFAM}/Include"
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
@@ -44,7 +45,7 @@ set(CMX_INC
 
 file(GLOB_RECURSE CMX_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Src/*.c"
 )
 
 enable_language(ASM)

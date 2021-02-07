@@ -88,6 +88,7 @@ if __name__ == "__main__":
         "mcuflags": ";".join(mcuFlags),
         "startupfile": "startup_" + mcuLine.lower() + ".s",
         "cdefs": ";".join([f"-D{cdef}" for cdef in cdefs]),
+        "srcpath": os.path.dirname(iocConf["ProjectManager.MainLocation"]),
         "prjname": iocConf["ProjectManager.ProjectName"]
     }
 
