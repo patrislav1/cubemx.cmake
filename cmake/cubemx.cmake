@@ -66,7 +66,7 @@ set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 ########################################
 
 if(NOT DEFINED CMX_DEBUGGER)
-    set(CMX_DEBUGGER "openocd")
+    set(CMX_DEBUGGER "stlink")
 endif()
 include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/flash-target.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/vscode-debug.cmake)

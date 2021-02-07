@@ -2,12 +2,12 @@
     "configurations": [
         {
             "name": "@PROJ_NAME@",
+            "cwd": "${workspaceRoot}",
             "executable": "@PROJ_ELF_PATH@",
             "request": "attach",
             "type": "cortex-debug",
-            "servertype": "pyocd",
-            "serverArgs": ["@PYOCD_OPT@"],
-            "serverpath": "@PYOCD_WRAPPER@",
+            "servertype": "stutil",
+            "v1": false
         }
     ]
 }
