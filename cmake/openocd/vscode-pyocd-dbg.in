@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+            "name": "@PROJ_NAME@",
+            "executable": "@PROJ_ELF_PATH@",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "pyocd",
+            "serverArgs": ["@PYOCD_OPT@"],
+            "serverpath": "@PYOCD_WRAPPER@",
+        }
+    ]
+}

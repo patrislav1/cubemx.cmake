@@ -65,8 +65,11 @@ set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 # Set up flashing & debugging          #
 ########################################
 
-include(${CMAKE_CURRENT_LIST_DIR}/pyocd/pyocd.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/pyocd/vscode-debug.cmake)
+if(NOT DEFINED CMX_DEBUGGER)
+    set(CMX_DEBUGGER "openocd")
+endif()
+include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/flash-target.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/vscode-debug.cmake)
 
 ########################################
 # Set up compiler / linker options     #
@@ -90,6 +93,6 @@ function(cubemx_target PROJ_NAME)
     target_include_directories(${PROJ_NAME} PRIVATE ${CMX_INC})
 
     mcu_image_utils(${PROJ_NAME})
-    pyocd_flash(${PROJ_NAME})
+    flash_target(${PROJ_NAME})
     vscode_debug(${PROJ_NAME})
 endfunction()

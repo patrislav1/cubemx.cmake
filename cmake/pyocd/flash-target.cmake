@@ -19,7 +19,7 @@ add_custom_target(erase
 #####################################
 # Flash application to target       #
 #####################################
-function(pyocd_flash PROJ_NAME)
+function(flash_target PROJ_NAME)
     add_custom_target(flash
         pyocd flash "${PROJ_NAME}.bin" ${PYOCD_OPT}
         DEPENDS ${PROJ_NAME}.bin
