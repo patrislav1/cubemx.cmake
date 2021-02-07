@@ -9,8 +9,9 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 * Parses CubeMX .ioc project file
 * Determines compile / link flags & linker script from project file
 * Adds relevant CubeMX / CMSIS sources & include paths to CMake target
-* Creates make targets `flash`, `erase`, `reset` using `pyocd`
-* Creates VSCode `launch.json` for debugging with `pyocd`
+* Supports flash/debug tools: [stlink](https://github.com/stlink-org/stlink), [pyocd](https://github.com/pyocd/pyOCD), [openocd](https://github.com/ntfreak/openocd)
+* Creates make targets `flash`, `erase`, `reset`
+* Creates VSCode `launch.json` for debugging
 
 ## How to use
 
