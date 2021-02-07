@@ -58,6 +58,8 @@ target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
 pyocd pack -i stm32f407vgtx
 ```
 
+* The current `arm-none-eabi-gdb` from [developer.arm.com](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads) is still linked against `libncurses5`, which may not be installed on a recent Linux distribution. (On Ubuntu, install it with `sudo apt install libncurses5`)
+
 ## Tested with following chips / boards
 
 * STM32F407VGT (STM32F407G-DISC1)
