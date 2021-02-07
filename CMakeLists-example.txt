@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 set(CMX_IOC "${CMAKE_CURRENT_LIST_DIR}/cubemx_project.ioc")
 include(cmake/cubemx.cmake)
 
-project(example_project)
+project(${CMX_PROJ})
 
-add_executable(example_project additional_sources.c)
-cubemx_target(example_project)
-target_compile_options(example_project PRIVATE -Og -Wall -g -gdwarf-2)
+add_executable(${CMX_PROJ} additional_sources.c)
+cubemx_target(${CMX_PROJ})
+target_compile_options(${CMX_PROJ} PRIVATE -Og -Wall -g -gdwarf-2)

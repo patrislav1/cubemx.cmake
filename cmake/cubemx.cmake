@@ -22,6 +22,12 @@ function(cmx_get KEY_NAME VAR_NAME)
     set(${VAR_NAME} ${KEY_VAL} PARENT_SCOPE)
 endfunction()
 
+##################################################
+# Get CubeMX project name (convenience function) #
+##################################################
+
+cmx_get(prjname CMX_PROJ)
+
 ########################################
 # Determine MCU & source/include paths #
 ########################################

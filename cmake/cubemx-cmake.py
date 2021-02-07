@@ -87,7 +87,8 @@ if __name__ == "__main__":
         "fpu": fpu,
         "mcuflags": ";".join(mcuFlags),
         "startupfile": "startup_" + mcuLine.lower() + ".s",
-        "cdefs": ";".join([f"-D{cdef}" for cdef in cdefs])
+        "cdefs": ";".join([f"-D{cdef}" for cdef in cdefs]),
+        "prjname": iocConf["ProjectManager.ProjectName"]
     }
 
     if args.key:
