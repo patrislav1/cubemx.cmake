@@ -57,7 +57,11 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dump", action="store_true", help="Dump all parsed values")
     args = parser.parse_args()
 
-    iocConf = loadIOC(args.iocFile)
+    try:
+        iocConf = loadIOC(args.iocFile)
+    except FileNotFoundError as e:
+        print(f"Couldn't load IOC file: {e}", file=sys.stderr)
+        sys.exit(-1)
 
     mcuFamily = iocConf["Mcu.Family"]
 

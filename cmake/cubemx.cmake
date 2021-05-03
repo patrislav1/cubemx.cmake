@@ -17,8 +17,12 @@ function(cmx_get KEY_NAME VAR_NAME)
         ${Python3_EXECUTABLE}
         ${CMX_CMAKE} ${CMX_IOC} ${KEY_NAME}
         OUTPUT_VARIABLE KEY_VAL
+        RESULT_VARIABLE RET_CODE
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+    if(${RET_CODE})
+        message(FATAL_ERROR "cubemx-cmake.py failed - aborting")
+    endif()
     set(${VAR_NAME} ${KEY_VAL} PARENT_SCOPE)
 endfunction()
 
