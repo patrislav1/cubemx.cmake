@@ -19,6 +19,7 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 * Generate source code. (Select "Project->Toolchain/IDE: Makefile" and "Code Generator->Copy only necessary library files")
 * Copy the `cmake` folder to the project directory
 * Create a `CMakeLists.txt` from the `CMakeLists-example.txt`
+* Make sure `arm-none-eabi-gcc` is in the PATH
 
 ## How to build a project on the command line
 
@@ -53,6 +54,8 @@ file(GLOB_RECURSE MIDDLEWARE_SRC
 )
 target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
 ```
+
+* Other user-specific source files (e.g. a dedicated application folder separate from the CubeMX sources) can be added the same way as above
 
 * For most STM32 chips, `pyocd` must be updated with a device pack to recognize the chip, e.g.
 ```
