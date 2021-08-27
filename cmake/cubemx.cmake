@@ -110,6 +110,7 @@ function(cubemx_target PROJ_NAME)
     target_link_libraries(${PROJ_NAME} c m nosys)
     target_sources(${PROJ_NAME} PRIVATE ${CMX_SRC})
     target_include_directories(${PROJ_NAME} PRIVATE ${CMX_INC})
+    target_link_options(${PROJ_NAME} PRIVATE -Xlinker --print-memory-usage)
 
     mcu_image_utils(${PROJ_NAME})
     flash_target(${PROJ_NAME})
