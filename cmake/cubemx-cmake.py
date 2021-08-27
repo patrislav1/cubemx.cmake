@@ -48,15 +48,13 @@ def getFpu(mcuName):
     # TODO in case of m7 core, check if it has single or double precision fpu
     fpuTable = {
         "cortex-m0": None,
-        "cortex-m0+": None,
+        "cortex-m0plus": None,
         "cortex-m3": None,
         "cortex-m4": "fpv4-sp-d16",
         "cortex-m33": "fpv5-sp-d16",
         "cortex-m7": "fpv5-d16"
     }
-    for key, value in fpuTable.items():
-        if getCore(mcuName) == key:
-            return value
+    return fpuTable[getCore(mcuName)]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Minimalist CubeMX .ioc project parser")
@@ -77,10 +75,11 @@ if __name__ == "__main__":
     fpu = getFpu(mcuFamily)
     mcuFlags = [
         f"-mcpu={core}",
-        f"-mfpu={fpu}",
         "-mthumb",
         "-mfloat-abi=hard" if fpu is not None else "-mfloat-abi=soft"
     ]
+    if fpu is not None:
+        mcuFlags += [f"-mfpu={fpu}"]
 
     mcuLine = iocConf["Mcu.UserName"][0:9] + "xx"
     cdefs = [
