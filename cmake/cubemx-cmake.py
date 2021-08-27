@@ -97,7 +97,8 @@ if __name__ == "__main__":
         "core": core,
         "fpu": fpu,
         "mcuflags": ";".join(mcuFlags),
-        "startupfile": "startup_" + mcuLine.lower() + ".s",
+        "startupfile_makefile": "startup_" + mcuLine.lower() + ".s",
+        "startupfile_stm32cubeide": "startup_" + iocConf["Mcu.UserName"].lower() + ".s",
         "cdefs": ";".join([f"-D{cdef}" for cdef in cdefs]),
         "srcpath": os.path.dirname(iocConf["ProjectManager.MainLocation"]),
         "prjname": iocConf["ProjectManager.ProjectName"]

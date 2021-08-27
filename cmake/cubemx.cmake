@@ -53,15 +53,30 @@ file(GLOB_RECURSE CMX_SRC
 )
 
 enable_language(ASM)
-cmx_get(startupfile CMX_STARTUPFILE)
+
+# Check if the "Makefile" startupfile is in the source tree
+cmx_get(startupfile_makefile CMX_STARTUPFILE)
+file(GLOB_RECURSE STARTUPFILE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
+if("${STARTUPFILE_PATH}" STREQUAL "")
+    # If not, look for the "STM32CubeIDE" startupfile
+    cmx_get(startupfile_stm32cubeide CMX_STARTUPFILE)
+    file(GLOB_RECURSE STARTUPFILE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
+endif()
+message("Using startup file: ${STARTUPFILE_PATH}")
 
 list(APPEND CMX_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_STARTUPFILE}"
+    "${STARTUPFILE_PATH}"
 )
 
-set(CMX_LDFILE
-    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_MCUNAME}_FLASH.ld"
-)
+# Check if the "Makefile" linkerscript is in the source tree
+set(LINKERSCRIPT "${CMX_MCUNAME}_FLASH.ld")
+file(GLOB_RECURSE CMX_LDFILE ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
+if("${CMX_LDFILE}" STREQUAL "")
+    # If not, look for the "STM32CubeIDE" linkerscript
+    string(REPLACE "x" "X" LINKERSCRIPT ${LINKERSCRIPT})
+    file(GLOB_RECURSE CMX_LDFILE ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
+endif()
+message("Using linkerscript: ${CMX_LDFILE}")
 
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
