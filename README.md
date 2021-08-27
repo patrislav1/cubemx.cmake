@@ -16,7 +16,7 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 ## How to use
 
 * Create a project with CubeMX
-* Generate source code. (Select "Project->Toolchain/IDE: Makefile" and "Code Generator->Copy only necessary library files")
+* Generate source code. (Select "Project->Toolchain/IDE: Makefile" or "STM32CubeIDE" and "Code Generator->Copy only necessary library files")
 * Copy the `cmake` folder to the project directory
 * Create a `CMakeLists.txt` from the `CMakeLists-example.txt`
 * Make sure `arm-none-eabi-gcc` is in the PATH
@@ -37,6 +37,8 @@ mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainF
 * Start VSCode and select the kit "arm-gcc from CMake Toolchain"
 
 ## Caveats
+
+* Depending on the project setup and generated sources, one of the symbols `USE_FULL_LL_DRIVER`, `USE_HAL_DRIVER` have to be defined. Most of the time, they can both be used (like in the example CMakeLists.txt) but if there are compiler errors due to missing driver include files, one of them might need to be removed.
 
 * The list of CubeMX source files is determined by globbing at CMake configuration stage. If it changes (by re-generating the sources with added peripherals, for example) then the CubeMX configuration has to be invoked again (in VSCode: Ctrl-Shift-P & "CMake: Configure" or "Developer: Reload Window")
 
