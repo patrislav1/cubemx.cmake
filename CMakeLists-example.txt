@@ -14,4 +14,5 @@ add_executable(${CMX_PROJ} additional_sources.c)
 cubemx_target(${CMX_PROJ})
 target_compile_options(${CMX_PROJ} PRIVATE -Og -Wall -g -gdwarf-2)
 
-
+# Depending on the project setup, sometimes one of these symbols must be omitted. (Cannot be reliably derived from the .ioc file)
+target_compile_definitions(${CMX_PROJ} PRIVATE USE_FULL_LL_DRIVER USE_HAL_DRIVER)
