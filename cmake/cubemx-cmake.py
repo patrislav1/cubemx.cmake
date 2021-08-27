@@ -84,7 +84,6 @@ if __name__ == "__main__":
 
     mcuLine = iocConf["Mcu.UserName"][0:9] + "xx"
     cdefs = [
-        "USE_FULL_LL_DRIVER",
         f"HSE_VALUE={iocConf['RCC.HSE_VALUE']}",
         f"HSI_VALUE={iocConf['RCC.HSI_VALUE']}",
         f"LSI_VALUE={iocConf['RCC.LSI_VALUE']}",
