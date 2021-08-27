@@ -28,10 +28,16 @@ def getCore(mcuName):
         "STM32F3": "cortex-m4",
         "STM32F4": "cortex-m4",
         "STM32F7": "cortex-m7",
+        "STM32G0": "cortex-m0plus",
+        "STM32G4": "cortex-m4",
         "STM32H7": "cortex-m7",
         "STM32L0": "cortex-m0",
         "STM32L1": "cortex-m3",
-        "STM32L4": "cortex-m4",
+        "STM32L4": "cortex-m4", # L4+ included
+        "STM32L5": "cortex-m33",
+        "STM32U5": "cortex-m33",
+        "STM32WL": "cortex-m4", # Assume we build for the application processor (M4),
+        "STM32WB": "cortex-m4", # not for the radio coprocessor (M0)
     }
     for key, value in coreTable.items():
         if mcuName.startswith(key):
@@ -42,8 +48,10 @@ def getFpu(mcuName):
     # TODO in case of m7 core, check if it has single or double precision fpu
     fpuTable = {
         "cortex-m0": None,
+        "cortex-m0+": None,
         "cortex-m3": None,
         "cortex-m4": "fpv4-sp-d16",
+        "cortex-m33": "fpv5-sp-d16",
         "cortex-m7": "fpv5-d16"
     }
     for key, value in fpuTable.items():
