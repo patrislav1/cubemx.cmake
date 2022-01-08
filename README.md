@@ -17,14 +17,14 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 
 * Create a project with CubeMX
 * Generate source code. (Select "Project->Toolchain/IDE: Makefile" or "STM32CubeIDE" and "Code Generator->Copy only necessary library files")
-* Copy the `cmake` folder to the project directory
+* Copy this repository to the source tree or add it as `git submodule`
 * Create a `CMakeLists.txt` from the `CMakeLists-example.txt`
 * Make sure `arm-none-eabi-gcc` is in the PATH
 
 ## How to build a project on the command line
 
 ```
-mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc.cmake .. && make
+mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cubemx.cmake/arm-gcc.cmake .. && make
 ```
 
 ## How to build a project in VSCode
@@ -32,7 +32,7 @@ mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc.cmake .
 * Make sure the "CMake Tools" extension is installed.
 * Point VSCode to the CMake toolchain file in the project directory:
 ```
-mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainFile": "${workspaceRoot}/cmake/arm-gcc.cmake" }]' > .vscode/cmake-kits.json
+mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainFile": "${workspaceRoot}/cubemx.cmake/arm-gcc.cmake" }]' > .vscode/cmake-kits.json
 ```
 * Start VSCode and select the kit "arm-gcc from CMake Toolchain"
 
