@@ -1,11 +1,11 @@
 include(${CMAKE_CURRENT_LIST_DIR}/mcu-img-utils.cmake)
+set(VSCODE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.vscode")
 
 #####################################
 # Setup CubeMX .ioc parser          #
 #####################################
 
 find_package(Python3 COMPONENTS Interpreter)
-
 if(NOT Python3_FOUND)
     message(FATAL_ERROR "Need Python3")
 endif()
