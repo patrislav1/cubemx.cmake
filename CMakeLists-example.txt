@@ -1,18 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMX_IOC "${CMAKE_CURRENT_LIST_DIR}/cubemx_project.ioc")
-
 # Possible values: openocd, pyocd, stlink. stlink is default
 # set(CMX_DEBUGGER "openocd")
 # set(OPENOCD_CFG "${CMAKE_CURRENT_SOURCE_DIR}/openocd.cfg")
 
 include(cubemx.cmake/cubemx.cmake)
 
-project(${CMX_PROJ})
+project(testproject)
 
-add_executable(${CMX_PROJ} additional_sources.c)
-cubemx_target(${CMX_PROJ})
-target_compile_options(${CMX_PROJ} PRIVATE -Og -Wall -g -gdwarf-2)
+add_executable(testproject additional_sources.c)
+cubemx_target(
+    TARGET testproject
+    IOC "${CMAKE_CURRENT_LIST_DIR}/cubemx_project.ioc"
+    STARTUP "custom_startup.s"    # optional custom startup
+    LDSCRIPT "custom_ldscript.ld" # optional custom ldscript
+)
+target_compile_options(testproject PRIVATE -Og -Wall -g -gdwarf-2)
 
 # Depending on the project setup, sometimes one of these symbols must be omitted. (Cannot be reliably derived from the .ioc file)
-target_compile_definitions(${CMX_PROJ} PRIVATE USE_FULL_LL_DRIVER USE_HAL_DRIVER)
+target_compile_definitions(testproject PRIVATE USE_FULL_LL_DRIVER USE_HAL_DRIVER)

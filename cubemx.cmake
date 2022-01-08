@@ -1,5 +1,6 @@
 include(${CMAKE_CURRENT_LIST_DIR}/mcu-img-utils.cmake)
 set(VSCODE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.vscode")
+set(CUBEMXCMK_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 #####################################
 # Setup CubeMX .ioc parser          #
@@ -11,6 +12,9 @@ if(NOT Python3_FOUND)
 endif()
 
 set(CMX_CMAKE "${CMAKE_CURRENT_LIST_DIR}/cubemx-cmake.py")
+
+enable_language(ASM)
+set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 function(cmx_get KEY_NAME VAR_NAME)
     execute_process(COMMAND
@@ -26,93 +30,111 @@ function(cmx_get KEY_NAME VAR_NAME)
     set(${VAR_NAME} ${KEY_VAL} PARENT_SCOPE)
 endfunction()
 
-##################################################
-# Get CubeMX project name (convenience function) #
-##################################################
+function(add_default_sources)
+    set(CMX_INC
+        "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Inc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${CMX_MCUFAM}/Include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
+        PARENT_SCOPE
+    )
 
-cmx_get(prjname CMX_PROJ)
+    file(GLOB_RECURSE CMX_SRC
+        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Src/*.c"
+        PARENT_SCOPE
+    )
+    set(CMX_SRC ${CMX_SRC} PARENT_SCOPE)
+endfunction()
 
-########################################
-# Determine MCU & source/include paths #
-########################################
+function(add_startup)
+    if ("${CMX_STARTUP}" STREQUAL "")
+        # Check if the "Makefile" startupfile is in the source tree
+        cmx_get(startupfile_makefile CMX_STARTUPFILE)
+        file(GLOB_RECURSE CMX_STARTUP ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
+        if("${CMX_STARTUP}" STREQUAL "")
+            # If not, look for the "STM32CubeIDE" startupfile
+            cmx_get(startupfile_stm32cubeide CMX_STARTUPFILE)
+            file(GLOB_RECURSE CMX_STARTUP ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
+            if("${CMX_STARTUP}" STREQUAL "")
+                message(FATAL_ERROR "CubeMX startup file not found!")
+            endif()
+        endif()
+    endif()
 
-cmx_get(mcuname CMX_MCUNAME)
-cmx_get(mcufamily CMX_MCUFAM)
-cmx_get(srcpath CMX_SRCPATH)
+    message("Using startup file: ${CMX_STARTUP}")
+    list(APPEND CMX_SRC
+        "${CMX_STARTUP}"
+    )
+    set(CMX_SRC ${CMX_SRC} PARENT_SCOPE)
+endfunction()
 
-set(CMX_INC
-    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Inc"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${CMX_MCUFAM}/Include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
-)
+function(add_ldscript)
+    if ("${CMX_LDSCRIPT}" STREQUAL "")
+        # Check if the "Makefile" linkerscript is in the source tree
+        set(LINKERSCRIPT "${CMX_MCUNAME}_FLASH.ld")
+        file(GLOB_RECURSE CMX_LDSCRIPT ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
+        if("${CMX_LDSCRIPT}" STREQUAL "")
+            # If not, look for the "STM32CubeIDE" linkerscript
+            string(REPLACE "x" "X" LINKERSCRIPT ${LINKERSCRIPT})
+            file(GLOB_RECURSE CMX_LDSCRIPT ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
+            if("${CMX_LDSCRIPT}" STREQUAL "")
+                message(FATAL_ERROR "CubeMX linkerscript not found!")
+            endif()
+        endif()
+    endif()
+    message("Using linkerscript: ${CMX_LDSCRIPT}")
+    set(CMX_LDSCRIPT ${CMX_LDSCRIPT} PARENT_SCOPE)
+endfunction()
 
-file(GLOB_RECURSE CMX_SRC
-    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Src/*.c"
-)
+function(cubemx_target)
+    set(ONE_VAL_ARGS TARGET IOC STARTUP LDSCRIPT)
+    cmake_parse_arguments(CMX "" "${ONE_VAL_ARGS}" "" ${ARGN})
 
-enable_language(ASM)
+    ########################################
+    # Determine MCU & source/include paths #
+    ########################################
 
-# Check if the "Makefile" startupfile is in the source tree
-cmx_get(startupfile_makefile CMX_STARTUPFILE)
-file(GLOB_RECURSE STARTUPFILE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
-if("${STARTUPFILE_PATH}" STREQUAL "")
-    # If not, look for the "STM32CubeIDE" startupfile
-    cmx_get(startupfile_stm32cubeide CMX_STARTUPFILE)
-    file(GLOB_RECURSE STARTUPFILE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
-endif()
-message("Using startup file: ${STARTUPFILE_PATH}")
+    cmx_get(mcuname CMX_MCUNAME)
+    cmx_get(mcufamily CMX_MCUFAM)
+    cmx_get(srcpath CMX_SRCPATH)
 
-list(APPEND CMX_SRC
-    "${STARTUPFILE_PATH}"
-)
+    add_default_sources()
+    add_startup()
+    add_ldscript()
 
-# Check if the "Makefile" linkerscript is in the source tree
-set(LINKERSCRIPT "${CMX_MCUNAME}_FLASH.ld")
-file(GLOB_RECURSE CMX_LDFILE ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
-if("${CMX_LDFILE}" STREQUAL "")
-    # If not, look for the "STM32CubeIDE" linkerscript
-    string(REPLACE "x" "X" LINKERSCRIPT ${LINKERSCRIPT})
-    file(GLOB_RECURSE CMX_LDFILE ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
-endif()
-message("Using linkerscript: ${CMX_LDFILE}")
+    ########################################
+    # Set up flashing & debugging          #
+    ########################################
 
-set(CMAKE_EXECUTABLE_SUFFIX ".elf")
+    if(NOT DEFINED CMX_DEBUGGER)
+        set(CMX_DEBUGGER "stlink")
+    endif()
+    include(${CUBEMXCMK_DIR}/${CMX_DEBUGGER}/flash-target.cmake)
+    include(${CUBEMXCMK_DIR}/${CMX_DEBUGGER}/vscode-debug.cmake)
 
-########################################
-# Set up flashing & debugging          #
-########################################
+    ########################################
+    # Set up compiler / linker options     #
+    ########################################
 
-if(NOT DEFINED CMX_DEBUGGER)
-    set(CMX_DEBUGGER "stlink")
-endif()
-include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/flash-target.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/${CMX_DEBUGGER}/vscode-debug.cmake)
+    cmx_get(mcuflags CMX_MCUFLAGS)
+    cmx_get(cdefs CMX_CDEFS)
 
-########################################
-# Set up compiler / linker options     #
-########################################
-
-cmx_get(mcuflags CMX_MCUFLAGS)
-cmx_get(cdefs CMX_CDEFS)
-
-function(cubemx_target PROJ_NAME)
-    target_compile_options(${PROJ_NAME} PRIVATE ${CMX_MCUFLAGS})
-    target_compile_options(${PROJ_NAME} PRIVATE -ffunction-sections -fdata-sections)
-    target_compile_definitions(${PROJ_NAME} PRIVATE ${CMX_CDEFS})
-    target_link_options(${PROJ_NAME} PUBLIC ${CMX_MCUFLAGS})
-    target_link_options(${PROJ_NAME} PRIVATE "-T${CMX_LDFILE}")
-    target_link_options(${PROJ_NAME} PRIVATE
+    target_compile_options(${CMX_TARGET} PRIVATE ${CMX_MCUFLAGS})
+    target_compile_options(${CMX_TARGET} PRIVATE -ffunction-sections -fdata-sections)
+    target_compile_definitions(${CMX_TARGET} PRIVATE ${CMX_CDEFS})
+    target_link_options(${CMX_TARGET} PUBLIC ${CMX_MCUFLAGS})
+    target_link_options(${CMX_TARGET} PRIVATE "-T${CMX_LDSCRIPT}")
+    target_link_options(${CMX_TARGET} PRIVATE
         -Wl,--gc-sections
         --specs=nano.specs
     )
-    target_link_libraries(${PROJ_NAME} c m nosys)
-    target_sources(${PROJ_NAME} PRIVATE ${CMX_SRC})
-    target_include_directories(${PROJ_NAME} PRIVATE ${CMX_INC})
-    target_link_options(${PROJ_NAME} PRIVATE -Xlinker --print-memory-usage)
+    target_link_libraries(${CMX_TARGET} c m nosys)
+    target_sources(${CMX_TARGET} PRIVATE ${CMX_SRC})
+    target_include_directories(${CMX_TARGET} PRIVATE ${CMX_INC})
+    target_link_options(${CMX_TARGET} PRIVATE -Xlinker --print-memory-usage)
 
-    mcu_image_utils(${PROJ_NAME})
-    flash_target(${PROJ_NAME})
-    vscode_debug(${PROJ_NAME})
+    mcu_image_utils(${CMX_TARGET})
+    flash_target(${CMX_TARGET})
+    vscode_debug(${CMX_TARGET})
 endfunction()
