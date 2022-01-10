@@ -87,12 +87,11 @@ if __name__ == "__main__":
         mcuFlags += [f"-mfpu={fpu}"]
 
     mcuLine = iocConf["Mcu.UserName"][0:9] + "xx"
-    cdefs = [
-        f"HSE_VALUE={iocConf['RCC.HSE_VALUE']}",
-        f"HSI_VALUE={iocConf['RCC.HSI_VALUE']}",
-        f"LSI_VALUE={iocConf['RCC.LSI_VALUE']}",
-        mcuLine
-    ]
+    cdefs = [mcuLine]
+    for key in "HSE", "HSI", "LSI":
+        iocKey = 'RCC.' + key + '_VALUE'
+        if iocKey in iocConf:
+            cdefs.append(f"{key}_VALUE={iocConf[iocKey]}")
 
     cmakeConf = {
         "mcuname": iocConf["Mcu.UserName"],
