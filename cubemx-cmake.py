@@ -4,6 +4,7 @@ import argparse
 import os
 import sys
 
+
 def loadIOC(filename):
     conf = {}
     with open(filename) as f:
@@ -33,11 +34,11 @@ def getCore(mcuName):
         "STM32H7": "cortex-m7",
         "STM32L0": "cortex-m0",
         "STM32L1": "cortex-m3",
-        "STM32L4": "cortex-m4", # L4+ included
+        "STM32L4": "cortex-m4",  # L4+ included
         "STM32L5": "cortex-m33",
         "STM32U5": "cortex-m33",
-        "STM32WL": "cortex-m4", # Assume we build for the application processor (M4),
-        "STM32WB": "cortex-m4", # not for the radio coprocessor (M0)
+        "STM32WL": "cortex-m4",  # Assume we build for app. processor (M4),
+        "STM32WB": "cortex-m4",  # not for the radio coprocessor (M0)
     }
     for key, value in coreTable.items():
         if mcuName.startswith(key):
@@ -56,11 +57,15 @@ def getFpu(mcuName):
     }
     return fpuTable[getCore(mcuName)]
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Minimalist CubeMX .ioc project parser")
+    parser = argparse.ArgumentParser(
+        description="Minimalist CubeMX .ioc project parser")
     parser.add_argument("iocFile", help="CubeMX .ioc project file")
-    parser.add_argument("key", nargs="?", default=None, help="Dump value of key")
-    parser.add_argument("-d", "--dump", action="store_true", help="Dump all parsed values")
+    parser.add_argument("key", nargs="?", default=None,
+                        help="Dump value of key")
+    parser.add_argument("-d", "--dump", action="store_true",
+                        help="Dump all parsed values")
     args = parser.parse_args()
 
     try:
