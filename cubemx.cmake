@@ -48,7 +48,7 @@ function(add_default_sources)
 endfunction()
 
 function(add_startup)
-    if ("${CMX_STARTUP}" STREQUAL "")
+    if("${CMX_STARTUP}" STREQUAL "")
         # Check if the "Makefile" startupfile is in the source tree
         cmx_get(startupfile_makefile CMX_STARTUPFILE)
         file(GLOB_RECURSE CMX_STARTUP ${CMAKE_CURRENT_SOURCE_DIR} ${CMX_STARTUPFILE})
@@ -70,7 +70,7 @@ function(add_startup)
 endfunction()
 
 function(add_ldscript)
-    if ("${CMX_LDSCRIPT}" STREQUAL "")
+    if("${CMX_LDSCRIPT}" STREQUAL "")
         # Check if the "Makefile" linkerscript is in the source tree
         set(LINKERSCRIPT "${CMX_MCUNAME}_FLASH.ld")
         file(GLOB_RECURSE CMX_LDSCRIPT ${CMAKE_CURRENT_SOURCE_DIR} ${LINKERSCRIPT})
@@ -88,8 +88,26 @@ function(add_ldscript)
 endfunction()
 
 function(cubemx_target)
-    set(ONE_VAL_ARGS TARGET IOC STARTUP LDSCRIPT)
+    set(ONE_VAL_ARGS
+        TARGET
+        IOC
+        STARTUP
+        LDSCRIPT
+        FLASH_TARGET_NAME
+        IMG_ADDR
+    )
     cmake_parse_arguments(CMX "" "${ONE_VAL_ARGS}" "" ${ARGN})
+
+    ########################################
+    # Set default values                   #
+    ########################################
+
+    if("${CMX_FLASH_TARGET_NAME}" STREQUAL "")
+        set(CMX_FLASH_TARGET_NAME flash)
+    endif()
+    if("${CMX_IMG_ADDR}" STREQUAL "")
+        set(CMX_IMG_ADDR 0x08000000)
+    endif()
 
     ########################################
     # Determine MCU & source/include paths #
@@ -135,6 +153,6 @@ function(cubemx_target)
     target_link_options(${CMX_TARGET} PRIVATE -Xlinker --print-memory-usage)
 
     mcu_image_utils(${CMX_TARGET})
-    flash_target(${CMX_TARGET})
+    flash_target(${CMX_TARGET} ${CMX_FLASH_TARGET_NAME} ${CMX_IMG_ADDR})
     vscode_debug(${CMX_TARGET})
 endfunction()
