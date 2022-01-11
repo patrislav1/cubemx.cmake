@@ -32,16 +32,16 @@ endfunction()
 
 function(add_default_sources)
     set(CMX_INC
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Inc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${CMX_MCUFAM}/Include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
+        "${CMX_CUBEMX_CORE_DIR}/${CMX_COREPATH}/Inc"
+        "${CMX_CUBEMX_LIB_DIR}/Drivers/CMSIS/Include"
+        "${CMX_CUBEMX_LIB_DIR}/Drivers/CMSIS/Device/ST/${CMX_MCUFAM}/Include"
+        "${CMX_CUBEMX_LIB_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Inc"
         PARENT_SCOPE
     )
 
     file(GLOB_RECURSE CMX_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/${CMX_SRCPATH}/Src/*.c"
+        "${CMX_CUBEMX_CORE_DIR}/${CMX_COREPATH}/Src/*.c"
+        "${CMX_CUBEMX_LIB_DIR}/Drivers/${CMX_MCUFAM}_HAL_Driver/Src/*.c"
         PARENT_SCOPE
     )
     set(CMX_SRC ${CMX_SRC} PARENT_SCOPE)
@@ -91,12 +91,19 @@ function(cubemx_target)
     set(ONE_VAL_ARGS
         TARGET
         IOC
+        CUBEMX_SOURCE_DIR
+        CUBEMX_CORE_DIR
+        CUBEMX_LIB_DIR
         STARTUP
         LDSCRIPT
         FLASH_TARGET_NAME
         IMG_ADDR
     )
     cmake_parse_arguments(CMX "" "${ONE_VAL_ARGS}" "" ${ARGN})
+
+    if("${CMX_TARGET}" STREQUAL "")
+        set(CMX_TARGET ${ARGV0})
+    endif()
 
     ########################################
     # Set default values                   #
@@ -108,6 +115,15 @@ function(cubemx_target)
     if("${CMX_IMG_ADDR}" STREQUAL "")
         set(CMX_IMG_ADDR 0x08000000)
     endif()
+    if("${CMX_CUBEMX_SOURCE_DIR}" STREQUAL "")
+        set(CMX_CUBEMX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+    if("${CMX_CUBEMX_CORE_DIR}" STREQUAL "")
+        set(CMX_CUBEMX_CORE_DIR "${CMX_CUBEMX_SOURCE_DIR}")
+    endif()
+    if("${CMX_CUBEMX_LIB_DIR}" STREQUAL "")
+        set(CMX_CUBEMX_LIB_DIR "${CMX_CUBEMX_SOURCE_DIR}")
+    endif()
 
     ########################################
     # Determine MCU & source/include paths #
@@ -115,7 +131,7 @@ function(cubemx_target)
 
     cmx_get(mcuname CMX_MCUNAME)
     cmx_get(mcufamily CMX_MCUFAM)
-    cmx_get(srcpath CMX_SRCPATH)
+    cmx_get(corepath CMX_COREPATH)
 
     add_default_sources()
     add_startup()
