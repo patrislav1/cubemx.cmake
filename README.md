@@ -9,7 +9,7 @@ It is a more lightweight / modular replacement of [ioc2cmake](https://github.com
 * Parses CubeMX .ioc project file
 * Determines compile / link flags & linker script from project file
 * Adds relevant CubeMX / CMSIS sources & include paths to CMake target
-* Supports flash/debug tools: [stlink](https://github.com/stlink-org/stlink), [pyocd](https://github.com/pyocd/pyOCD), [openocd](https://github.com/ntfreak/openocd)
+* Supports flash/debug tools: [stlink](https://github.com/stlink-org/stlink), [pyocd](https://github.com/pyocd/pyOCD), [openocd](https://github.com/ntfreak/openocd), [blackmagic](https://github.com/blacksphere/blackmagic)
 * Creates make targets `flash`, `erase`, `reset`
 * Creates VSCode `launch.json` for debugging
 
@@ -57,6 +57,16 @@ mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainF
 ## Caveats
 
 * Depending on the project setup and generated sources, one of the symbols `USE_FULL_LL_DRIVER`, `USE_HAL_DRIVER` have to be defined. Most of the time, they can both be used (like in the example CMakeLists.txt) but if there are compiler errors due to missing driver include files, one of them might need to be removed.
+
+* For some STM32 models, such as the STM32F103 used on the famous "blue pill" board, the MCU type definition and name of the startup file used by CubeMX is different from the `Mcu.UserName` provided in the `.ioc` file. In that case, you need to specify that information explicitly. Example for the "blue pill" board:
+```
+target_compile_definitions(bluepill_project PRIVATE STM32F103xB)
+cubemx_target(
+    TARGET bluepill_project
+    IOC ...
+    STARTUP "${CMAKE_CURRENT_LIST_DIR}/startup_stm32f103xb.s"
+)
+```
 
 * The list of CubeMX source files is determined by globbing at CMake configuration stage. If it changes (by re-generating the sources with added peripherals, for example) then the CubeMX configuration has to be invoked again (in VSCode: Ctrl-Shift-P & "CMake: Configure" or "Developer: Reload Window")
 
