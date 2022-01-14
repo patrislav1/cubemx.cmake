@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "@PROJ_NAME@",
+            "cwd": "${workspaceRoot}",
+            "executable": "@PROJ_ELF_PATH@",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "bmp",
+            "interface": "swd",
+            "BMPGDBSerialPort" : "@BLACKMAGIC_GDB_PORT@",
+        }
+    ]
+}
