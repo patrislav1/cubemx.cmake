@@ -1,4 +1,6 @@
-set(PYOCD_OPT "-t${CMX_MCUNAME}")
+if(NOT PYOCD_OPT)
+    set(PYOCD_OPT "-t${CMX_MCUNAME}")
+endif()
 
 #####################################
 # Reset chip                        #
