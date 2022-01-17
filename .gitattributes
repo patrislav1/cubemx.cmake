@@ -1,0 +1,7 @@
+*       text=auto
+*.cmake text
+*.in    text
+*.md    text
+*.py    text
+*.txt   text
+*.gdb   text
