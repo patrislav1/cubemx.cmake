@@ -146,6 +146,10 @@ function(cubemx_target)
     endif()
     include(${CUBEMXCMK_DIR}/${CMX_DEBUGGER}/flash-target.cmake)
     include(${CUBEMXCMK_DIR}/${CMX_DEBUGGER}/vscode-debug.cmake)
+    if(NOT TARGET erase AND NOT TARGET reset)
+        # erase and reset targets can only be defined once
+        add_erase_and_reset()
+    endif()
 
     ########################################
     # Set up compiler / linker options     #

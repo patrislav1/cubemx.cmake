@@ -1,18 +1,20 @@
-#####################################
-# Reset chip                        #
-#####################################
-add_custom_target(reset
-    st-flash reset
-    COMMENT "Resetting chip"
-)
+function(add_erase_and_reset)
+    #####################################
+    # Reset chip                        #
+    #####################################
+    add_custom_target(reset
+        st-flash reset
+        COMMENT "Resetting chip"
+    )
 
-#####################################
-# Mass erase chip                   #
-#####################################
-add_custom_target(erase
-    st-flash erase
-    COMMENT "Mass erasing chip"
-)
+    #####################################
+    # Mass erase chip                   #
+    #####################################
+    add_custom_target(erase
+        st-flash erase
+        COMMENT "Mass erasing chip"
+    )
+endfunction()
 
 #####################################
 # Flash application to target       #

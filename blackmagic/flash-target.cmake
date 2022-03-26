@@ -1,7 +1,10 @@
 set(BMP_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-# Blackmagic probe implements a GDB server, so we have only GDB commands at our disposal.
-# There is no support for reset or mass erase, so we can only implement the flash function
+function(add_erase_and_reset)
+    # Blackmagic probe implements a GDB server, so we have only GDB commands at our disposal.
+    # There is no support for reset or mass erase, so we can only implement the flash function
+    message(WARNING "erase / reset target not implemented for Blackmagic probe")
+endfunction()
 
 if("${BLACKMAGIC_GDB_PORT}" STREQUAL "")
     set(BLACKMAGIC_GDB_PORT "/dev/ttyBmpGdb")

@@ -2,21 +2,23 @@ if(NOT PYOCD_OPT)
     set(PYOCD_OPT "-t${CMX_MCUNAME}")
 endif()
 
-#####################################
-# Reset chip                        #
-#####################################
-add_custom_target(reset
-    pyocd reset ${PYOCD_OPT}
-    COMMENT "Resetting chip"
-)
+function(add_erase_and_reset)
+    #####################################
+    # Reset chip                        #
+    #####################################
+    add_custom_target(reset
+        pyocd reset ${PYOCD_OPT}
+        COMMENT "Resetting chip"
+    )
 
-#####################################
-# Mass erase chip                   #
-#####################################
-add_custom_target(erase
-    pyocd erase --chip ${PYOCD_OPT}
-    COMMENT "Mass erasing chip"
-)
+    #####################################
+    # Mass erase chip                   #
+    #####################################
+    add_custom_target(erase
+        pyocd erase --chip ${PYOCD_OPT}
+        COMMENT "Mass erasing chip"
+    )
+endfunction()
 
 #####################################
 # Flash application to target       #

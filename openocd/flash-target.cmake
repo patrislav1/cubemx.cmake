@@ -2,21 +2,23 @@ if(DEFINED OPENOCD_CFG)
     set(OPENOCD_CFG_OPT -f ${OPENOCD_CFG})
 endif()
 
-#####################################
-# Reset chip                        #
-#####################################
-add_custom_target(reset
-    openocd ${CMX_DEBUGGER_OPT} ${OPENOCD_CFG_OPT} -c "init" -c "reset" -c "exit"
-    COMMENT "Resetting chip"
-)
+function(add_erase_and_reset)
+    #####################################
+    # Reset chip                        #
+    #####################################
+    add_custom_target(reset
+        openocd ${CMX_DEBUGGER_OPT} ${OPENOCD_CFG_OPT} -c "init" -c "reset" -c "exit"
+        COMMENT "Resetting chip"
+    )
 
-#####################################
-# Mass erase chip                   #
-#####################################
-add_custom_target(erase
-    openocd ${CMX_DEBUGGER_OPT} ${OPENOCD_CFG_OPT} -c "init" -c "halt" -c "stm32l4x mass_erase 0" -c "exit"
-    COMMENT "Mass erasing chip"
-)
+    #####################################
+    # Mass erase chip                   #
+    #####################################
+    add_custom_target(erase
+        openocd ${CMX_DEBUGGER_OPT} ${OPENOCD_CFG_OPT} -c "init" -c "halt" -c "stm32l4x mass_erase 0" -c "exit"
+        COMMENT "Mass erasing chip"
+    )
+endfunction()
 
 #####################################
 # Flash application to target       #
