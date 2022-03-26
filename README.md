@@ -42,7 +42,7 @@ Set up your executable target with a regular `add_executable(<target_name> <targ
 
 ## How to build a project on the command line
 
-```
+```bash
 mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cubemx.cmake/arm-gcc.cmake .. && make
 ```
 
@@ -50,7 +50,7 @@ mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=../cubemx.cmake/arm-gcc.
 
 * Make sure the "CMake Tools" extension is installed.
 * Point VSCode to the CMake toolchain file in the project directory:
-```
+```bash
 mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainFile": "${workspaceRoot}/cubemx.cmake/arm-gcc.cmake" }]' > .vscode/cmake-kits.json
 ```
 * Start VSCode and select the kit "arm-gcc from CMake Toolchain"
@@ -60,7 +60,7 @@ mkdir -p .vscode && echo '[{ "name": "arm-gcc from CMake Toolchain", "toolchainF
 * Depending on the project setup and generated sources, one of the symbols `USE_FULL_LL_DRIVER`, `USE_HAL_DRIVER` have to be defined. Most of the time, they can both be used (like in the example CMakeLists.txt) but if there are compiler errors due to missing driver include files, one of them might need to be removed.
 
 * For some STM32 models, such as the STM32F103 used on the famous "blue pill" board, the MCU type definition and name of the startup file used by CubeMX is different from the `Mcu.UserName` provided in the `.ioc` file. In that case, you need to specify that information explicitly. Example for the "blue pill" board:
-```
+```cmake
 target_compile_definitions(bluepill_project PRIVATE STM32F103xB)
 cubemx_target(
     TARGET bluepill_project
@@ -72,7 +72,7 @@ cubemx_target(
 * The list of CubeMX source files is determined by globbing at CMake configuration stage. If it changes (by re-generating the sources with added peripherals, for example) then the CubeMX configuration has to be invoked again (in VSCode: Ctrl-Shift-P & "CMake: Configure" or "Developer: Reload Window")
 
 * Only the sources in `Core` and `Drivers` are added automatically. If there are additional generated sources (e.g. Middlewares), they have to be added manually, for instance:
-```
+```cmake
 target_include_directories(example_target PRIVATE
     "USB_HOST/App"
     "USB_HOST/Target"
@@ -89,7 +89,7 @@ target_sources(example_target PRIVATE ${MIDDLEWARE_SRC})
 * Other user-specific source files (e.g. a dedicated application folder separate from the CubeMX sources) can be added the same way as above
 
 * For most STM32 chips, `pyocd` must be updated with a device pack to recognize the chip, e.g.
-```
+```bash
 pyocd pack -i stm32f407vgtx
 ```
 
