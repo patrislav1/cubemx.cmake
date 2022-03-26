@@ -3,8 +3,9 @@
 #####################################
 
 function(mcu_elf2bin PROJ_NAME)
+    separate_arguments(EXTRA_OPTS UNIX_COMMAND "${ARGN}")
     add_custom_command(TARGET ${PROJ_NAME} POST_BUILD
-        COMMAND "${CMAKE_OBJCOPY}" -O binary
+        COMMAND "${CMAKE_OBJCOPY}" -O binary ${EXTRA_OPTS}
         "${PROJ_NAME}.elf"
         "${PROJ_NAME}.bin"
         BYPRODUCTS "${PROJ_NAME}.bin"
@@ -53,7 +54,7 @@ endfunction()
 #####################################
 
 function(mcu_image_utils PROJ_NAME)
-    mcu_elf2bin(${PROJ_NAME})
+    mcu_elf2bin(${PROJ_NAME} "${ARGN}")
     mcu_elf2lst(${PROJ_NAME})
     mcu_map(${PROJ_NAME})
     mcu_imgsize(${PROJ_NAME})

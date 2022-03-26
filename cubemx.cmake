@@ -98,6 +98,7 @@ function(cubemx_target)
         LDSCRIPT
         FLASH_TARGET_NAME
         IMG_ADDR
+        ELF2BIN_OPT
     )
     cmake_parse_arguments(CMX "" "${ONE_VAL_ARGS}" "" ${ARGN})
 
@@ -172,7 +173,7 @@ function(cubemx_target)
     target_include_directories(${CMX_TARGET} PRIVATE ${CMX_INC})
     target_link_options(${CMX_TARGET} PRIVATE -Xlinker --print-memory-usage)
 
-    mcu_image_utils(${CMX_TARGET})
+    mcu_image_utils(${CMX_TARGET} ${CMX_ELF2BIN_OPT})
     flash_target(${CMX_TARGET} ${CMX_FLASH_TARGET_NAME} ${CMX_IMG_ADDR})
     vscode_debug(${CMX_TARGET})
 endfunction()

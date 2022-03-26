@@ -38,6 +38,7 @@ Set up your executable target with a regular `add_executable(<target_name> <targ
 |`LDSCRIPT`         | `STMXYZ_FLASH.ld`           | By default the linker script provided by CubeMX is used, but it can be overridden if a custom one is needed (e.g. for a bootloader and/or custom memory layouts). |
 |`FLASH_TARGET_NAME`| `flash`                     | CMake target name for the "flash to target" operation. By default, `make flash` will program the target. To avoid name collision, it is necessary to assign different names, if multiple `cubemx_target`s are created. |
 |`IMG_ADDR`         | `0x08000000`                | Start address of flash image. It can be overridden e.g. when a bootloader is used. |
+|`ELF2BIN_OPT`      | -                           | Additional options to be passed to `objcopy`, e.g. for padding of the `.bin` file. |
 
 ## How to build a project on the command line
 
