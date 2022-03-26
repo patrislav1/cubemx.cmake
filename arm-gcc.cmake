@@ -4,12 +4,7 @@ set(CMAKE_CROSSCOMPILING TRUE)
 
 set(TOOLCHAIN_PREFIX arm-none-eabi-)
 
-if(EXISTS "${ARMGCC_TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}gcc")
-    set(BINUTILS_PATH "${ARMGCC_TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}gcc")
-elseif(EXISTS "${ARMGCC_TOOLCHAIN_PATH}/bin/${TOOLCHAIN_PREFIX}gcc")
-    set(BINUTILS_PATH "${ARMGCC_TOOLCHAIN_PATH}/bin/${TOOLCHAIN_PREFIX}gcc")
-    set(ARMGCC_TOOLCHAIN_PATH "${ARMGCC_TOOLCHAIN_PATH}/bin")
-else()
+function(find_armgcc)
     if(MINGW OR CYGWIN OR WIN32)
         set(UTIL_SEARCH_CMD where)
     elseif(UNIX OR APPLE)
@@ -32,8 +27,21 @@ else()
 
     # Use only the topmost path, if more than one is found
     string(REGEX REPLACE "\n.+" "" BINUTILS_PATH "${BINUTILS_PATH}")
-    get_filename_component(ARMGCC_TOOLCHAIN_PATH "${BINUTILS_PATH}" DIRECTORY)
+    
+    set(BINUTILS_PATH ${BINUTILS_PATH} PARENT_SCOPE)
+endfunction()
+
+if(NOT ARMGCC_TOOLCHAIN_PATH)
+    find_armgcc()
+elseif(EXISTS "${ARMGCC_TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}gcc")
+    set(BINUTILS_PATH "${ARMGCC_TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}gcc")
+elseif(EXISTS "${ARMGCC_TOOLCHAIN_PATH}/bin/${TOOLCHAIN_PREFIX}gcc")
+    set(BINUTILS_PATH "${ARMGCC_TOOLCHAIN_PATH}/bin/${TOOLCHAIN_PREFIX}gcc")
+else()
+    message(FATAL_ERROR "No ${TOOLCHAIN_PREFIX}gcc found at ${ARMGCC_TOOLCHAIN_PATH}")
 endif()
+
+get_filename_component(ARMGCC_TOOLCHAIN_PATH "${BINUTILS_PATH}" DIRECTORY)
 
 # Without that flag CMake is not able to pass test compilation check
 if (${CMAKE_VERSION} VERSION_EQUAL "3.6.0" OR ${CMAKE_VERSION} VERSION_GREATER "3.6")
