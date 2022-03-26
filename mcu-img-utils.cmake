@@ -18,8 +18,9 @@ endfunction()
 #####################################
 
 function(mcu_elf2lst PROJ_NAME)
+    separate_arguments(EXTRA_OPTS UNIX_COMMAND "${ARGN}")
     add_custom_command(TARGET ${PROJ_NAME} POST_BUILD
-        COMMAND "${CMAKE_OBJDUMP}" -S
+        COMMAND "${CMAKE_OBJDUMP}" -S ${EXTRA_OPTS}
         "${PROJ_NAME}.elf"
         > "${PROJ_NAME}.lst"
         BYPRODUCTS "${PROJ_NAME}.lst"
@@ -53,9 +54,9 @@ endfunction()
 # Create all of the above           #
 #####################################
 
-function(mcu_image_utils PROJ_NAME)
-    mcu_elf2bin(${PROJ_NAME} "${ARGN}")
-    mcu_elf2lst(${PROJ_NAME})
+function(mcu_image_utils PROJ_NAME ELF2BIN_OPTS ELF2LST_OPTS)
+    mcu_elf2bin(${PROJ_NAME} ${ELF2BIN_OPTS})
+    mcu_elf2lst(${PROJ_NAME} ${ELF2LST_OPTS})
     mcu_map(${PROJ_NAME})
     mcu_imgsize(${PROJ_NAME})
 endfunction()
