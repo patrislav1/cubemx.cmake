@@ -51,11 +51,11 @@ function(add_startup)
     if("${CMX_STARTUP}" STREQUAL "")
         # Check if the "Makefile" startupfile is in the source tree
         cmx_get(startupfile_makefile CMX_STARTUPFILE)
-        file(GLOB_RECURSE CMX_STARTUP ${CMX_CUBEMX_CORE_DIR} ${CMX_STARTUPFILE})
+        file(GLOB_RECURSE CMX_STARTUP "${CMX_CUBEMX_CORE_DIR}/${CMX_STARTUPFILE}")
         if("${CMX_STARTUP}" STREQUAL "")
             # If not, look for the "STM32CubeIDE" startupfile
             cmx_get(startupfile_stm32cubeide CMX_STARTUPFILE)
-            file(GLOB_RECURSE CMX_STARTUP ${CMX_CUBEMX_CORE_DIR} ${CMX_STARTUPFILE})
+            file(GLOB_RECURSE CMX_STARTUP "${CMX_CUBEMX_CORE_DIR}/${CMX_STARTUPFILE}")
             if("${CMX_STARTUP}" STREQUAL "")
                 message(FATAL_ERROR "CubeMX startup file not found!")
             endif()
