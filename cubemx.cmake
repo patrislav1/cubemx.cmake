@@ -203,7 +203,7 @@ function(cubemx_target)
     target_include_directories(${CMX_TARGET} PRIVATE ${CMX_INC})
     target_link_options(${CMX_TARGET} PRIVATE -Xlinker --print-memory-usage)
 
-    set_property(TARGET ${CMX_TARGET} PROPERTY TARGET_FILE_ELF "${CMX_TARGET}.elf")
+    set_property(TARGET ${CMX_TARGET} PROPERTY TARGET_FILE_ELF "${CMAKE_CURRENT_BINARY_DIR}/${CMX_TARGET}.elf")
 
     mcu_image_utils(${CMX_TARGET} "${CMX_ELF2BIN_OPT}" "${CMX_ELF2LST_OPT}")
     flash_target(${CMX_TARGET} ${CMX_FLASH_TARGET_NAME} ${CMX_IMG_ADDR})
