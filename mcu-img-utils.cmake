@@ -11,6 +11,7 @@ function(mcu_elf2bin PROJ_NAME)
         BYPRODUCTS "${PROJ_NAME}.bin"
         COMMENT "Generating ${PROJ_NAME}.bin"
     )
+    set_property(TARGET ${PROJ_NAME} PROPERTY TARGET_FILE_BIN "${CMAKE_CURRENT_BINARY_DIR}/${CMX_TARGET}.bin")
 endfunction()
 
 #####################################
@@ -26,6 +27,7 @@ function(mcu_elf2lst PROJ_NAME)
         BYPRODUCTS "${PROJ_NAME}.lst"
         COMMENT "Generating ${PROJ_NAME}.lst"
     )
+    set_property(TARGET ${PROJ_NAME} PROPERTY TARGET_FILE_LST "${CMAKE_CURRENT_BINARY_DIR}/${CMX_TARGET}.lst")
 endfunction()
 
 #####################################
@@ -37,6 +39,7 @@ function(mcu_map PROJ_NAME)
     set_target_properties(${PROJ_NAME} PROPERTIES ADDITIONAL_CLEAN_FILES
         "${PROJ_NAME}.map"
     )
+    set_property(TARGET ${PROJ_NAME} PROPERTY TARGET_FILE_MAP "${CMAKE_CURRENT_BINARY_DIR}/${CMX_TARGET}.map")
 endfunction()
 
 #####################################

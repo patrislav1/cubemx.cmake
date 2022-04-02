@@ -16,6 +16,31 @@ set(CMX_CMAKE "${CMAKE_CURRENT_LIST_DIR}/cubemx-cmake.py")
 enable_language(ASM)
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
+define_property(TARGET PROPERTY TARGET_FILE_BIN
+    BRIEF_DOCS "Name of the raw image file"
+    FULL_DOCS "This property gives the name of the generated .bin file containing a raw memory image of the linked executable file."
+)
+define_property(TARGET PROPERTY TARGET_FILE_ELF
+    BRIEF_DOCS "Name of the executable file"
+    FULL_DOCS "This property gives the name of the generated .elf file containing the compiled executable. This is identical to the TARGET_FILE property."
+)
+define_property(TARGET PROPERTY TARGET_FILE_LST
+    BRIEF_DOCS "Name of the listing file"
+    FULL_DOCS "This property gives the name of the generated .lst file containing the mixed source/assembly output for the executable."
+)
+define_property(TARGET PROPERTY TARGET_FILE_MAP
+    BRIEF_DOCS "Name of the symbol map file"
+    FULL_DOCS "This property gives the name of the generated .map file containing the mapping of input objects and where they were placed by the linker."
+)
+define_property(TARGET PROPERTY SOURCE_FILE_STARTUP
+    BRIEF_DOCS "Name of the startup code file"
+    FULL_DOCS "This property gives the name of the startup code file used to boot the MCU."
+)
+define_property(TARGET PROPERTY SOURCE_FILE_LDSCRIPT
+    BRIEF_DOCS "Name of the linker script file"
+    FULL_DOCS "This property gives the name of the linker script file used to place generated code in the final executable image."
+)
+
 function(cmx_get KEY_NAME VAR_NAME)
     execute_process(COMMAND
         ${Python3_EXECUTABLE}
@@ -67,6 +92,7 @@ function(add_startup)
         "${CMX_STARTUP}"
     )
     set(CMX_SRC ${CMX_SRC} PARENT_SCOPE)
+    set(CMX_STARTUP ${CMX_STARTUP} PARENT_SCOPE)
 endfunction()
 
 function(add_ldscript)
@@ -139,6 +165,8 @@ function(cubemx_target)
     add_default_sources()
     add_startup()
     add_ldscript()
+    set_property(TARGET ${CMX_TARGET} PROPERTY SOURCE_FILE_STARTUP "${CMX_STARTUP}")
+    set_property(TARGET ${CMX_TARGET} PROPERTY SOURCE_FILE_LDSCRIPT "${CMX_LDSCRIPT}")
 
     ########################################
     # Set up flashing & debugging          #
@@ -174,6 +202,8 @@ function(cubemx_target)
     target_sources(${CMX_TARGET} PRIVATE ${CMX_SRC})
     target_include_directories(${CMX_TARGET} PRIVATE ${CMX_INC})
     target_link_options(${CMX_TARGET} PRIVATE -Xlinker --print-memory-usage)
+
+    set_property(TARGET ${CMX_TARGET} PROPERTY TARGET_FILE_ELF "${CMAKE_CURRENT_BINARY_DIR}/${CMX_TARGET}.elf")
 
     mcu_image_utils(${CMX_TARGET} "${CMX_ELF2BIN_OPT}" "${CMX_ELF2LST_OPT}")
     flash_target(${CMX_TARGET} ${CMX_FLASH_TARGET_NAME} ${CMX_IMG_ADDR})
